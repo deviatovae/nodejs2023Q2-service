@@ -1,7 +1,7 @@
 export const usersRoutes = {
-  getAll: '/user',
+  getAll: '/users',
   getById: (userId) => `/user/${userId}`,
-  create: '/user',
+  create: '/users',
   update: (userId) => `/user/${userId}`,
   delete: (userId) => `/user/${userId}`,
 };

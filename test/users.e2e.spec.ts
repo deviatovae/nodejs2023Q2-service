@@ -30,7 +30,7 @@ describe('Users (e2e)', () => {
   });
 
   afterAll(async () => {
-    // delete mock user
+    // delete mock users
     if (mockUserId) {
       await removeTokenUser(unauthorizedRequest, mockUserId, commonHeaders);
     }
@@ -49,7 +49,7 @@ describe('Users (e2e)', () => {
       expect(response.body).toBeInstanceOf(Array);
     });
 
-    it('should correctly get user by id', async () => {
+    it('should correctly get users by id', async () => {
       const creationResponse = await unauthorizedRequest
         .post(usersRoutes.create)
         .set(commonHeaders)
@@ -81,7 +81,7 @@ describe('Users (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if user doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if users doesn't exist", async () => {
       const response = await unauthorizedRequest
         .get(usersRoutes.getById(randomUUID))
         .set(commonHeaders);
@@ -91,7 +91,7 @@ describe('Users (e2e)', () => {
   });
 
   describe('POST', () => {
-    it('should correctly create user', async () => {
+    it('should correctly create users', async () => {
       const response = await unauthorizedRequest
         .post(usersRoutes.create)
         .set(commonHeaders)
@@ -145,7 +145,7 @@ describe('Users (e2e)', () => {
   });
 
   describe('PUT', () => {
-    it('should correctly update user password match', async () => {
+    it('should correctly update users password match', async () => {
       const creationResponse = await unauthorizedRequest
         .post(usersRoutes.create)
         .set(commonHeaders)
@@ -220,7 +220,7 @@ describe('Users (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if user doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if users doesn't exist", async () => {
       const response = await unauthorizedRequest
         .put(usersRoutes.update(randomUUID))
         .set(commonHeaders)
@@ -234,7 +234,7 @@ describe('Users (e2e)', () => {
   });
 
   describe('DELETE', () => {
-    it('should correctly delete user', async () => {
+    it('should correctly delete users', async () => {
       const response = await unauthorizedRequest
         .post(usersRoutes.create)
         .set(commonHeaders)
@@ -265,7 +265,7 @@ describe('Users (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if user doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if users doesn't exist", async () => {
       const response = await unauthorizedRequest
         .delete(usersRoutes.delete(randomUUID))
         .set(commonHeaders);
