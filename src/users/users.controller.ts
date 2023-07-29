@@ -4,7 +4,8 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode, InternalServerErrorException,
+  HttpCode,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -26,7 +27,9 @@ export class UsersController {
 
   @Get('/users')
   getAllUsers() {
-    return this.userService.getAllUsers().map(user => this.userSerializer.serialize(user));
+    return this.userService
+      .getAllUsers()
+      .map((user) => this.userSerializer.serialize(user));
   }
 
   @Post('/users')

@@ -37,7 +37,7 @@ export class UsersService {
 
     user.password = newPassword;
     user.version = user.version + 1;
-    user.updatedAt = Date.now()
+    user.updatedAt = Date.now();
 
     return user;
   }
