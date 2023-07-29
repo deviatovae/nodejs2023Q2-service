@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,12 +20,23 @@ export class UsersService {
       id: uuidv4(),
       login,
       password,
-      version: 0,
+      version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
 
     this.users.push(user);
+    return user;
+  }
+
+  updateUser(user: User, { oldPassword, newPassword }: UpdateUserDto): User {
+    if (user.password !== oldPassword) {
+      throw new ForbiddenException();
+    }
+
+    user.password = newPassword;
+    user.version = user.version + 1;
+
     return user;
   }
 }
