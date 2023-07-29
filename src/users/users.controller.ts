@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode, InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -13,29 +15,33 @@ import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserSerializer } from './user.serializer';
 
 @Controller('')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly userSerializer: UserSerializer,
+  ) {}
 
   @Get('/users')
-  getAllUsers(): User[] {
-    return this.userService.getAllUsers();
+  getAllUsers() {
+    return this.userService.getAllUsers().map(user => this.userSerializer.serialize(user));
   }
 
   @Post('/users')
+  @HttpCode(201)
   createUser(@Body() dto: CreateUserDto): Omit<User, 'password'> {
     if (!dto.login || !dto.password) {
       throw new BadRequestException('Invalid dto format');
     }
     const user = this.userService.createUser(dto);
 
-    const { id, login, version, createdAt, updatedAt } = user;
-    return { id, login, version, createdAt, updatedAt };
+    return this.userSerializer.serialize(user);
   }
 
   @Get('/user/:id')
-  async getUser(@Param('id') id: string): Promise<User | null> {
+  async getUser(@Param('id') id: string) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid userId format');
     }
@@ -44,14 +50,11 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
-    return user;
+    return this.userSerializer.serialize(user);
   }
 
   @Put('/user/:id')
-  async updateUser(
-    @Param('id') id: string,
-    @Body() dto: UpdateUserDto,
-  ): Promise<User> {
+  async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid userId format');
     }
@@ -71,6 +74,23 @@ export class UsersController {
       throw new BadRequestException();
     }
 
-    return user;
+    return this.userSerializer.serialize(user);
+  }
+
+  @Delete('/user/:id')
+  @HttpCode(204)
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid userId format');
+    }
+
+    const user = await this.userService.getUserById(id);
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    if (!this.userService.deleteUser(user)) {
+      throw new InternalServerErrorException();
+    }
   }
 }

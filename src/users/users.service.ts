@@ -7,6 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
   private users: User[] = [];
+
   getAllUsers(): User[] {
     return this.users;
   }
@@ -36,7 +37,20 @@ export class UsersService {
 
     user.password = newPassword;
     user.version = user.version + 1;
+    user.updatedAt = Date.now()
 
     return user;
+  }
+
+  deleteUser(user: User): boolean {
+    const userIdx = this.users.findIndex((u) => user === u);
+
+    if (userIdx < 0) {
+      return false;
+    }
+
+    this.users.splice(userIdx, 1);
+
+    return true;
   }
 }
