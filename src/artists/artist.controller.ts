@@ -17,12 +17,14 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 import { isBoolean, isUUID } from 'class-validator';
 import { Artist } from './artist.model';
 import { TrackService } from '../tracks/track.service';
+import { AlbumService } from '../albums/album.service';
 
 @Controller('')
 export class ArtistController {
   constructor(
     private readonly artistService: ArtistService,
     private readonly trackService: TrackService,
+    private readonly albumService: AlbumService,
   ) {}
 
   @Get('/artists')
@@ -98,6 +100,14 @@ export class ArtistController {
       if (track.artistId === id) {
         const updTrack = { ...track, artistId: null };
         this.trackService.updateTrack(track, updTrack);
+      }
+    });
+
+    const albums = this.albumService.getAllAlbums();
+    albums.forEach((album) => {
+      if (album.artistId === id) {
+        const updAlbum = { ...album, artistId: null };
+        this.albumService.updateAlbum(album, updAlbum);
       }
     });
   }
