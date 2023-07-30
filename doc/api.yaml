@@ -18,6 +18,8 @@ components:
         login:
           type: string
           example: 'TestUser'
+        password:
+          type: string
         version:
           type: number
           example: 1
