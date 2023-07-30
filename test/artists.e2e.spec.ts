@@ -16,7 +16,7 @@ const createArtistDto = {
 // Probability of collisions for UUID is almost zero
 const randomUUID = '0a35dd62-e09f-444b-a628-f4e7c6954f57';
 
-describe('artist (e2e)', () => {
+describe('artists (e2e)', () => {
   const unauthorizedRequest = request;
   const commonHeaders = { Accept: 'application/json' };
   let mockUserId: string | undefined;
@@ -50,7 +50,7 @@ describe('artist (e2e)', () => {
       expect(response.body).toBeInstanceOf(Array);
     });
 
-    it('should correctly get artist by id', async () => {
+    it('should correctly get artists by id', async () => {
       const creationResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
@@ -82,7 +82,7 @@ describe('artist (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if artist doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if artists doesn't exist", async () => {
       const response = await unauthorizedRequest
         .get(artistsRoutes.getById(randomUUID))
         .set(commonHeaders);
@@ -92,7 +92,7 @@ describe('artist (e2e)', () => {
   });
 
   describe('POST', () => {
-    it('should correctly create artist', async () => {
+    it('should correctly create artists', async () => {
       const response = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
@@ -139,7 +139,7 @@ describe('artist (e2e)', () => {
   });
 
   describe('PUT', () => {
-    it('should correctly update artist match', async () => {
+    it('should correctly update artists match', async () => {
       const creationResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
@@ -205,7 +205,7 @@ describe('artist (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if artist doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if artists doesn't exist", async () => {
       const response = await unauthorizedRequest
         .put(artistsRoutes.update(randomUUID))
         .set(commonHeaders)
@@ -219,7 +219,7 @@ describe('artist (e2e)', () => {
   });
 
   describe('DELETE', () => {
-    it('should correctly delete artist', async () => {
+    it('should correctly delete artists', async () => {
       const response = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
@@ -250,7 +250,7 @@ describe('artist (e2e)', () => {
       expect(response.status).toBe(StatusCodes.BAD_REQUEST);
     });
 
-    it("should respond with NOT_FOUND status code in case if artist doesn't exist", async () => {
+    it("should respond with NOT_FOUND status code in case if artists doesn't exist", async () => {
       const response = await unauthorizedRequest
         .delete(artistsRoutes.delete(randomUUID))
         .set(commonHeaders);

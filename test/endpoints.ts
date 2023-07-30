@@ -7,9 +7,9 @@ export const usersRoutes = {
 };
 
 export const artistsRoutes = {
-  getAll: '/artist',
+  getAll: '/artists',
   getById: (artistId) => `/artist/${artistId}`,
-  create: '/artist',
+  create: '/artists',
   update: (artistId) => `/artist/${artistId}`,
   delete: (artistId) => `/artist/${artistId}`,
 };

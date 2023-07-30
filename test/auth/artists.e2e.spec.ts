@@ -10,7 +10,7 @@ const createArtistDto = {
 // Probability of collisions for UUID is almost zero
 const randomUUID = '0a35dd62-e09f-444b-a628-f4e7c6954f57';
 
-describe('artist (e2e)', () => {
+describe('artists (e2e)', () => {
   const commonHeaders = { Accept: 'application/json' };
   describe('GET all artists', () => {
     it('should get UNAUTHORIZED without token presented', async () => {
@@ -21,7 +21,7 @@ describe('artist (e2e)', () => {
     });
   });
 
-  describe('GET artist by id', () => {
+  describe('GET artists by id', () => {
     it('should get UNAUTHORIZED without token presented', async () => {
       await request
         .get(artistsRoutes.getById(randomUUID))

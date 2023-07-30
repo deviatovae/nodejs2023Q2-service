@@ -641,8 +641,8 @@ paths:
     post:
       tags:
         - Artist
-      summary: Add new artist
-      description: Add new artist
+      summary: Add new artists
+      description: Add new artists
       requestBody:
         required: true
         content:
@@ -679,8 +679,8 @@ paths:
     get:
       tags:
         - Artist
-      summary: Get single artist by id
-      description: Get single artist by id
+      summary: Get single artists by id
+      description: Get single artists by id
       responses:
         200:
           description: Successful operation
@@ -697,8 +697,8 @@ paths:
     put:
       tags:
         - Artist
-      summary: Update artist information
-      description: Update artist information by UUID
+      summary: Update artists information
+      description: Update artists information by UUID
       requestBody:
         required: true
         content:
@@ -715,7 +715,7 @@ paths:
                 - grammy
       responses:
         200:
-          description: The artist has been updated.
+          description: The artists has been updated.
           content:
             application/json:
               schema:
@@ -729,8 +729,8 @@ paths:
     delete:
       tags:
         - Artist
-      summary: Delete artist
-      description: Delete artist from library
+      summary: Delete artists
+      description: Delete artists from library
       responses:
         204:
           description: Deleted successfully
@@ -838,8 +838,8 @@ paths:
     post:
       tags:
         - Favorites
-      summary: Add artist to the favorites
-      description: Add artist to the favorites
+      summary: Add artists to the favorites
+      description: Add artists to the favorites
       responses:
         201:
           description: Added successfully
@@ -852,8 +852,8 @@ paths:
     delete:
       tags:
         - Favorites
-      summary: Delete artist from favorites
-      description: Delete artist from favorites
+      summary: Delete artists from favorites
+      description: Delete artists from favorites
       responses:
         204:
           description: Deleted successfully

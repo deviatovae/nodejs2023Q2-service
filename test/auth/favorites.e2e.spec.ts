@@ -26,7 +26,7 @@ describe('Favorites (e2e)', () => {
     });
   });
 
-  describe('POST artist to favorites', () => {
+  describe('POST artists to favorites', () => {
     it('should get UNAUTHORIZED without token presented', async () => {
       await request
         .post(favoritesRoutes.artists(randomUUID))
@@ -53,7 +53,7 @@ describe('Favorites (e2e)', () => {
     });
   });
 
-  describe('DELETE artist from favorites', () => {
+  describe('DELETE artists from favorites', () => {
     it('should get UNAUTHORIZED without token presented', async () => {
       await request
         .delete(favoritesRoutes.artists(randomUUID))
