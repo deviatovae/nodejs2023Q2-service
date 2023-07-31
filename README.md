@@ -8,7 +8,13 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone git@github.com:deviatovae/nodejs2023Q2-service.git
+```
+
+## Switching to the development branch
+
+```
+git checkout develop
 ```
 
 ## Installing NPM modules
