@@ -47,7 +47,7 @@ describe('Favorites (e2e)', () => {
   });
 
   afterAll(async () => {
-    // delete mock users
+    // delete mock user
     if (mockUserId) {
       await removeTokenUser(unauthorizedRequest, mockUserId, commonHeaders);
     }
@@ -193,7 +193,7 @@ describe('Favorites (e2e)', () => {
   });
 
   describe('POST', () => {
-    it('should correctly add artists to favorites', async () => {
+    it('should correctly add artist to favorites', async () => {
       const createArtistResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)
@@ -370,7 +370,7 @@ describe('Favorites (e2e)', () => {
       expect(cleanupResponse.status).toBe(StatusCodes.NO_CONTENT);
     });
 
-    it('should correctly delete artists from favorites', async () => {
+    it('should correctly delete artist from favorites', async () => {
       const createArtistResponse = await unauthorizedRequest
         .post(artistsRoutes.create)
         .set(commonHeaders)

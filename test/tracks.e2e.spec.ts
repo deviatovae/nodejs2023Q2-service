@@ -32,7 +32,7 @@ describe('Tracks (e2e)', () => {
   });
 
   afterAll(async () => {
-    // delete mock users
+    // delete mock user
     if (mockUserId) {
       await removeTokenUser(unauthorizedRequest, mockUserId, commonHeaders);
     }

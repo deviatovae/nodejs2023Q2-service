@@ -6,7 +6,7 @@ const createUserDto = {
 };
 
 const getTokenAndUserId = async (request) => {
-  // create users
+  // create user
   const {
     body: { id: mockUserId },
   } = await request

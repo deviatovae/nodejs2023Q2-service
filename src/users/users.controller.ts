@@ -18,21 +18,21 @@ import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserSerializer } from './user.serializer';
 
-@Controller('')
+@Controller('user')
 export class UsersController {
   constructor(
     private readonly userService: UsersService,
     private readonly userSerializer: UserSerializer,
   ) {}
 
-  @Get('/users')
+  @Get()
   getAllUsers() {
     return this.userService
       .getAllUsers()
       .map((user) => this.userSerializer.serialize(user));
   }
 
-  @Post('/users')
+  @Post()
   @HttpCode(201)
   createUser(@Body() dto: CreateUserDto): Omit<User, 'password'> {
     if (!dto.login || !dto.password) {
@@ -43,7 +43,7 @@ export class UsersController {
     return this.userSerializer.serialize(user);
   }
 
-  @Get('/user/:id')
+  @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid userId format');
@@ -56,7 +56,7 @@ export class UsersController {
     return this.userSerializer.serialize(user);
   }
 
-  @Put('/user/:id')
+  @Put(':id')
   async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid userId format');
@@ -80,7 +80,7 @@ export class UsersController {
     return this.userSerializer.serialize(user);
   }
 
-  @Delete('/user/:id')
+  @Delete(':id')
   @HttpCode(204)
   async deleteUser(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {

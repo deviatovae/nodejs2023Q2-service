@@ -22,7 +22,7 @@ describe('Users (e2e)', () => {
     });
   });
 
-  describe('GET users by id', () => {
+  describe('GET user by id', () => {
     it('should get UNAUTHORIZED without token presented', async () => {
       await request
         .get(usersRoutes.getById(randomUUID))

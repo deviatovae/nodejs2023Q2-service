@@ -1,15 +1,15 @@
 export const usersRoutes = {
-  getAll: '/users',
+  getAll: '/user',
   getById: (userId) => `/user/${userId}`,
-  create: '/users',
+  create: '/user',
   update: (userId) => `/user/${userId}`,
   delete: (userId) => `/user/${userId}`,
 };
 
 export const artistsRoutes = {
-  getAll: '/artists',
+  getAll: '/artist',
   getById: (artistId) => `/artist/${artistId}`,
-  create: '/artists',
+  create: '/artist',
   update: (artistId) => `/artist/${artistId}`,
   delete: (artistId) => `/artist/${artistId}`,
 };

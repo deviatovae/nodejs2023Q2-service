@@ -27,12 +27,12 @@ export class ArtistController {
     private readonly albumService: AlbumService,
   ) {}
 
-  @Get('/artists')
+  @Get('/artist')
   getAllArtists(): Artist[] {
     return this.artistService.getAllArtists();
   }
 
-  @Post('/artists')
+  @Post('/artist')
   @HttpCode(201)
   createArtist(@Body() dto: CreateArtistDto): Artist {
     if (!dto.name || !isBoolean(dto.grammy)) {
