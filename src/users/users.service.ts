@@ -1,56 +1,44 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { User } from './user.model';
+import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
+  constructor(@InjectRepository(User) private repository: Repository<User>) {}
 
-  getAllUsers(): User[] {
-    return this.users;
+  getAllUsers(): Promise<User[]> {
+    return this.repository.find();
   }
 
-  getUserById(id: string): User {
-    return this.users.find((user) => user.id === id);
+  getUserById(id: string): Promise<User> {
+    return this.repository.findOneBy({ id });
   }
 
-  createUser({ login, password }: CreateUserDto): User {
-    const user = {
-      id: uuidv4(),
-      login,
-      password,
-      version: 1,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
+  async createUser({ login, password }: CreateUserDto): Promise<User> {
+    const user = new User(login, password);
 
-    this.users.push(user);
-    return user;
+    return this.repository.save(user, { reload: true });
   }
 
-  updateUser(user: User, { oldPassword, newPassword }: UpdateUserDto): User {
+  updateUser(
+    user: User,
+    { oldPassword, newPassword }: UpdateUserDto,
+  ): Promise<User> {
     if (user.password !== oldPassword) {
       throw new ForbiddenException();
     }
 
     user.password = newPassword;
-    user.version = user.version + 1;
-    user.updatedAt = Date.now();
 
-    return user;
+    return this.repository.save(user, { reload: true });
   }
 
-  deleteUser(user: User): boolean {
-    const userIdx = this.users.findIndex((u) => user === u);
+  async deleteUser(user: User): Promise<boolean> {
+    const deleteResult = await this.repository.delete({ id: user.id });
 
-    if (userIdx < 0) {
-      return false;
-    }
-
-    this.users.splice(userIdx, 1);
-
-    return true;
+    return !!deleteResult.affected;
   }
 }

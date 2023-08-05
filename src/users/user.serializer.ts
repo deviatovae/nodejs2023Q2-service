@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.model';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserSerializer {
-  serialize({
-    id,
-    login,
-    version,
-    createdAt,
-    updatedAt,
-  }: User): Omit<User, 'password'> {
-    return { id, login, version, createdAt, updatedAt };
+  serialize({ id, login, version, createdAt, updatedAt }: User) {
+    return {
+      id,
+      login,
+      version,
+      createdAt: createdAt.getTime(),
+      updatedAt: updatedAt.getTime(),
+    };
   }
 }

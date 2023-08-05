@@ -12,7 +12,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,19 +25,19 @@ export class UsersController {
   ) {}
 
   @Get()
-  getAllUsers() {
-    return this.userService
-      .getAllUsers()
-      .map((user) => this.userSerializer.serialize(user));
+  async getAllUsers() {
+    return (await this.userService.getAllUsers()).map((user) =>
+      this.userSerializer.serialize(user),
+    );
   }
 
   @Post()
   @HttpCode(201)
-  createUser(@Body() dto: CreateUserDto): Omit<User, 'password'> {
+  async createUser(@Body() dto: CreateUserDto) {
     if (!dto.login || !dto.password) {
       throw new BadRequestException('Invalid dto format');
     }
-    const user = this.userService.createUser(dto);
+    const user = await this.userService.createUser(dto);
 
     return this.userSerializer.serialize(user);
   }
@@ -71,13 +70,13 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
-    const userResult = this.userService.updateUser(user, dto);
 
+    const userResult = await this.userService.updateUser(user, dto);
     if (!userResult) {
       throw new BadRequestException();
     }
 
-    return this.userSerializer.serialize(user);
+    return this.userSerializer.serialize(userResult);
   }
 
   @Delete(':id')
@@ -92,7 +91,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    if (!this.userService.deleteUser(user)) {
+    if (!(await this.userService.deleteUser(user))) {
       throw new InternalServerErrorException();
     }
   }
