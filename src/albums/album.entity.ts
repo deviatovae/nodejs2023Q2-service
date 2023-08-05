@@ -29,7 +29,7 @@ export class Album {
   })
   artist: Artist | null;
 
-  @OneToMany(() => Track, (track) => track.artist, { cascade: ['update'] })
+  @OneToMany(() => Track, (track) => track.artist)
   tracks: Track[];
 
   constructor(album: Partial<Album>) {

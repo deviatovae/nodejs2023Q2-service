@@ -13,9 +13,9 @@ export class Artist {
   @Column()
   grammy: boolean;
 
-  @OneToMany(() => Track, (track) => track.artist, { cascade: ['update'] })
+  @OneToMany(() => Track, (track) => track.artist)
   tracks: Track[];
 
-  @OneToMany(() => Album, (album) => album.artist, { cascade: ['update'] })
+  @OneToMany(() => Album, (album) => album.artist)
   albums: Album[];
 }

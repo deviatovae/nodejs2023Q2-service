@@ -71,9 +71,7 @@ export class TrackController {
       throw new NotFoundException();
     }
 
-    this.trackService.updateTrack(track, dto);
-
-    return track;
+    return this.trackService.updateTrack(track, dto);
   }
 
   @Delete('/track/:id')
@@ -88,7 +86,7 @@ export class TrackController {
       throw new NotFoundException();
     }
 
-    if (!this.trackService.deleteTrack(track)) {
+    if (!(await this.trackService.deleteTrack(track))) {
       throw new InternalServerErrorException();
     }
   }

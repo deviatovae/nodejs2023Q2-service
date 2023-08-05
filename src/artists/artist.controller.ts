@@ -16,16 +16,10 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { isBoolean, isUUID } from 'class-validator';
 import { Artist } from './artist.entity';
-import { TrackService } from '../tracks/track.service';
-import { AlbumService } from '../albums/album.service';
 
 @Controller('')
 export class ArtistController {
-  constructor(
-    private readonly artistService: ArtistService,
-    private readonly trackService: TrackService,
-    private readonly albumService: AlbumService,
-  ) {}
+  constructor(private readonly artistService: ArtistService) {}
 
   @Get('/artist')
   getAllArtists(): Promise<Artist[]> {
@@ -95,21 +89,5 @@ export class ArtistController {
     if (!(await this.artistService.deleteArtist(artist))) {
       throw new InternalServerErrorException();
     }
-
-    // const tracks = this.trackService.getAllTracks();
-    // tracks.forEach((track) => {
-    //   if (track.artistId === id) {
-    //     const updTrack = { ...track, artistId: null };
-    //     this.trackService.updateTrack(track, updTrack);
-    //   }
-    // });
-    //
-    // const albums = this.albumService.getAllAlbums();
-    // albums.forEach((album) => {
-    //   if (album.artistId === id) {
-    //     const updAlbum = { ...album, artistId: null };
-    //     this.albumService.updateAlbum(album, updAlbum);
-    //   }
-    // });
   }
 }

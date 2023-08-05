@@ -18,15 +18,11 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { isUUID } from 'class-validator';
 import { Album } from './album.entity';
-import { TrackService } from '../tracks/track.service';
 
 @Controller('')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AlbumController {
-  constructor(
-    private readonly albumService: AlbumService,
-    private readonly trackService: TrackService,
-  ) {}
+  constructor(private readonly albumService: AlbumService) {}
 
   @Get('/album')
   getAllAlbums(): Promise<Album[]> {
@@ -90,16 +86,8 @@ export class AlbumController {
       throw new NotFoundException();
     }
 
-    if (!this.albumService.deleteAlbum(album)) {
+    if (!(await this.albumService.deleteAlbum(album))) {
       throw new InternalServerErrorException();
     }
-
-    // const tracks = this.trackService.getAllTracks();
-    // tracks.forEach((track) => {
-    //   if (track.albumId === id) {
-    //     const updTrack = { ...track, albumId: null };
-    //     this.trackService.updateTrack(track, updTrack);
-    //   }
-    // });
   }
 }
