@@ -1,6 +1,7 @@
 import {
   BadRequestException,
-  Body, ClassSerializerInterceptor,
+  Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,7 +10,8 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put, UseInterceptors,
+  Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';

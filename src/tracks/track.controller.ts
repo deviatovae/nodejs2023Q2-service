@@ -1,6 +1,7 @@
 import {
   BadRequestException,
-  Body, ClassSerializerInterceptor,
+  Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,7 +10,8 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put, UseInterceptors,
+  Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { CreateTrackDto } from './dto/create-track.dto';
