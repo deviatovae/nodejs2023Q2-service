@@ -13,18 +13,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        console.log(configService.get('DATABASE_DSN'));
-
-        return {
-          type: 'postgres',
-          synchronize: true,
-          url: configService.get('DATABASE_DSN'),
-          autoLoadEntities: true,
-          database: 'postgres',
-          schema: 'public',
-        };
-      },
+      useFactory: async (configService: ConfigService) => ({
+        type: 'postgres',
+        synchronize: true,
+        url: configService.get('DATABASE_DSN'),
+        autoLoadEntities: true,
+        database: 'postgres',
+        schema: 'public',
+      }),
     }),
     UsersModule,
     TrackModule,

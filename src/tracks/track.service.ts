@@ -1,55 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { Track } from './track.model';
+import { Track } from './track.entity';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { v4 as uuidv4 } from 'uuid';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TrackService {
-  private tracks: Track[] = [];
+  constructor(@InjectRepository(Track) private repository: Repository<Track>) {}
 
-  getAllTracks(): Track[] {
-    return this.tracks;
+  getAllTracks(): Promise<Track[]> {
+    return this.repository.find();
   }
 
-  getTrackById(id: string): Track {
-    return this.tracks.find((track) => track.id === id);
+  getTrackById(id: string): Promise<Track | null> {
+    return this.repository.findOneBy({ id });
   }
 
-  createTrack({ name, duration, artistId, albumId }: CreateTrackDto): Track {
-    const track = {
-      id: uuidv4(),
+  createTrack({
+    name,
+    duration,
+    artistId,
+    albumId,
+  }: CreateTrackDto): Promise<Track> {
+    const track = new Track({
       name,
-      artistId,
-      albumId,
       duration,
-    };
+    });
 
-    this.tracks.push(track);
-    return track;
+    return this.repository.save(track);
   }
 
   updateTrack(
     track: Track,
     { name, duration, artistId, albumId }: UpdateTrackDto,
-  ): Track {
+  ): Promise<Track> {
     track.name = name;
     track.duration = duration;
-    track.artistId = artistId;
-    track.albumId = albumId;
+    // track.artistId = artistId;
+    // track.albumId = albumId;
 
-    return track;
+    return this.repository.save(track);
   }
 
-  deleteTrack(track: Track): boolean {
-    const trackIdx = this.tracks.findIndex((t) => track === t);
+  async deleteTrack({ id: trackId }: Track): Promise<boolean> {
+    const deleteResult = await this.repository.delete({ id: trackId });
 
-    if (trackIdx < 0) {
-      return false;
-    }
-
-    this.tracks.splice(trackIdx, 1);
-
-    return true;
+    return !!deleteResult.affected;
   }
 }

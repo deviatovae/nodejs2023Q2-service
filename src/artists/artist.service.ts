@@ -2,46 +2,46 @@ import { Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { Artist } from './artist.model';
+import { Artist } from './artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
-  private artists: Artist[] = [];
+  constructor(
+    @InjectRepository(Artist) private repository: Repository<Artist>,
+  ) {}
 
-  getAllArtists(): Artist[] {
-    return this.artists;
+  getAllArtists(): Promise<Artist[]> {
+    return this.repository.find();
   }
 
-  getArtistById(id: string): Artist {
-    return this.artists.find((artist) => artist.id === id);
+  getArtistById(id: string): Promise<Artist> {
+    return this.repository.findOneBy({ id });
   }
 
-  createArtist(dto: CreateArtistDto): Artist {
+  createArtist(dto: CreateArtistDto): Promise<Artist> {
     const artist = {
       id: uuidv4(),
       ...dto,
     };
 
-    this.artists.push(artist);
-    return artist;
+    return this.repository.save(artist);
   }
 
-  updateArtist(artist: Artist, { name, grammy }: UpdateArtistDto): Artist {
+  updateArtist(
+    artist: Artist,
+    { name, grammy }: UpdateArtistDto,
+  ): Promise<Artist> {
     artist.name = name;
     artist.grammy = grammy;
 
-    return artist;
+    return this.repository.save(artist);
   }
 
-  deleteArtist(artist: Artist): boolean {
-    const artistIdx = this.artists.findIndex((t) => artist === t);
+  async deleteArtist(artist: Artist): Promise<boolean> {
+    const deleteResult = await this.repository.delete({ id: artist.id });
 
-    if (artistIdx < 0) {
-      return false;
-    }
-
-    this.artists.splice(artistIdx, 1);
-
-    return true;
+    return !!deleteResult.affected;
   }
 }

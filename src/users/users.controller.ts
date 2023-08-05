@@ -19,16 +19,15 @@ import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   getAllUsers() {
     return this.userService.getAllUsers();
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
   createUser(@Body() dto: CreateUserDto) {
@@ -39,7 +38,6 @@ export class UsersController {
     return this.userService.createUser(dto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!isUUID(id)) {
@@ -53,7 +51,6 @@ export class UsersController {
     return user;
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     if (!isUUID(id)) {

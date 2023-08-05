@@ -18,15 +18,9 @@ export class FavService {
     const favs = this.repository.getFavorites();
 
     return {
-      albums: favs.albums
-        .map((id) => this.albumService.getAlbumById(id))
-        .filter((val) => !!val),
-      tracks: favs.tracks
-        .map((id) => this.trackService.getTrackById(id))
-        .filter((val) => !!val),
-      artists: favs.artists
-        .map((id) => this.artistService.getArtistById(id))
-        .filter((val) => !!val),
+      albums: [],
+      tracks: [],
+      artists: [],
     };
   }
 

@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  Body,
+  Body, ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,16 +9,17 @@ import {
   NotFoundException,
   Param,
   Post,
-  Put,
+  Put, UseInterceptors,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { isUUID } from 'class-validator';
-import { Album } from './album.model';
+import { Album } from './album.entity';
 import { TrackService } from '../tracks/track.service';
 
 @Controller('')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AlbumController {
   constructor(
     private readonly albumService: AlbumService,
@@ -26,13 +27,13 @@ export class AlbumController {
   ) {}
 
   @Get('/album')
-  getAllAlbums(): Album[] {
+  getAllAlbums(): Promise<Album[]> {
     return this.albumService.getAllAlbums();
   }
 
   @Post('/album')
   @HttpCode(201)
-  createAlbum(@Body() dto: CreateAlbumDto): Album {
+  createAlbum(@Body() dto: CreateAlbumDto): Promise<Album> {
     if (!dto.name || !dto.year) {
       throw new BadRequestException('Invalid dto format');
     }
@@ -72,9 +73,7 @@ export class AlbumController {
       throw new NotFoundException();
     }
 
-    this.albumService.updateAlbum(album, dto);
-
-    return album;
+    return this.albumService.updateAlbum(album, dto);
   }
 
   @Delete('/album/:id')
@@ -93,12 +92,12 @@ export class AlbumController {
       throw new InternalServerErrorException();
     }
 
-    const tracks = this.trackService.getAllTracks();
-    tracks.forEach((track) => {
-      if (track.albumId === id) {
-        const updTrack = { ...track, albumId: null };
-        this.trackService.updateTrack(track, updTrack);
-      }
-    });
+    // const tracks = this.trackService.getAllTracks();
+    // tracks.forEach((track) => {
+    //   if (track.albumId === id) {
+    //     const updTrack = { ...track, albumId: null };
+    //     this.trackService.updateTrack(track, updTrack);
+    //   }
+    // });
   }
 }
