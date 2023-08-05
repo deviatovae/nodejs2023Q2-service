@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -10,38 +11,35 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserSerializer } from './user.serializer';
 
 @Controller('user')
 export class UsersController {
-  constructor(
-    private readonly userService: UsersService,
-    private readonly userSerializer: UserSerializer,
-  ) {}
+  constructor(private readonly userService: UsersService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
-  async getAllUsers() {
-    return (await this.userService.getAllUsers()).map((user) =>
-      this.userSerializer.serialize(user),
-    );
+  getAllUsers() {
+    return this.userService.getAllUsers();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @HttpCode(201)
-  async createUser(@Body() dto: CreateUserDto) {
+  createUser(@Body() dto: CreateUserDto) {
     if (!dto.login || !dto.password) {
       throw new BadRequestException('Invalid dto format');
     }
-    const user = await this.userService.createUser(dto);
 
-    return this.userSerializer.serialize(user);
+    return this.userService.createUser(dto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async getUser(@Param('id') id: string) {
     if (!isUUID(id)) {
@@ -52,9 +50,10 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
-    return this.userSerializer.serialize(user);
+    return user;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   async updateUser(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     if (!isUUID(id)) {
@@ -76,7 +75,7 @@ export class UsersController {
       throw new BadRequestException();
     }
 
-    return this.userSerializer.serialize(userResult);
+    return userResult;
   }
 
   @Delete(':id')
