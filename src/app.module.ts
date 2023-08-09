@@ -20,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         autoLoadEntities: true,
         database: 'postgres',
         schema: 'public',
+        logging: configService.get('DATABASE_LOGGING') === '1',
       }),
     }),
     UsersModule,
