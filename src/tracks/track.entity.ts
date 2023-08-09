@@ -15,12 +15,16 @@ export class Track {
   @Expose({ name: 'artistId' })
   @Transform(({ value }) => value?.id || null)
   @ManyToOne(() => Artist, (artist) => artist.tracks, {
+    eager: true,
     nullable: true,
     onDelete: 'SET NULL',
   })
   artist: Artist | null;
 
+  @Expose({ name: 'albumId' })
+  @Transform(({ value }) => value?.id || null)
   @ManyToOne(() => Album, (album) => album.tracks, {
+    eager: true,
     nullable: true,
     onDelete: 'SET NULL',
   })

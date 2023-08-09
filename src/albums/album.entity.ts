@@ -24,6 +24,7 @@ export class Album {
   @Expose({ name: 'artistId' })
   @Transform(({ value }) => value?.id || null)
   @ManyToOne(() => Artist, (artist) => artist.albums, {
+    eager: true,
     nullable: true,
     onDelete: 'SET NULL',
   })

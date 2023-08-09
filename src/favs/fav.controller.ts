@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,49 +9,51 @@ import {
   Param,
   Post,
   UnprocessableEntityException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FavService } from './fav.service';
 import { FavoritesResult } from './dto/fav-result.dto';
 import { isUUID } from 'class-validator';
 
 @Controller('/favs')
+@UseInterceptors(ClassSerializerInterceptor)
 export class FavController {
   constructor(private readonly favService: FavService) {}
 
   @Get()
-  getFavorites(): FavoritesResult {
+  getFavorites(): Promise<FavoritesResult> {
     return this.favService.getFavorites();
   }
 
   @Post('track/:id')
   @HttpCode(201)
-  addTrackToFav(@Param('id') id: string): void {
+  async addTrackToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.addTrackToFavorites(id)) {
+    if (!(await this.favService.addTrackToFavorites(id))) {
       throw new UnprocessableEntityException();
     }
   }
 
   @Post('album/:id')
   @HttpCode(201)
-  addAlbumToFav(@Param('id') id: string): void {
+  async addAlbumToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.addAlbumToFavorites(id)) {
+    if (!(await this.favService.addAlbumToFavorites(id))) {
       throw new UnprocessableEntityException();
     }
   }
 
   @Post('artist/:id')
   @HttpCode(201)
-  addArtistToFav(@Param('id') id: string): void {
+  async addArtistToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.addArtistToFavorites(id)) {
+    if (!(await this.favService.addArtistToFavorites(id))) {
       throw new UnprocessableEntityException();
     }
   }

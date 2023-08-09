@@ -1,13 +1,25 @@
-import { Favorites } from './fav.model';
+import { Fav } from './entity/fav.entity';
+import { Album } from '../albums/album.entity';
+import { Artist } from '../artists/artist.entity';
+import { Track } from '../tracks/track.entity';
+import { FavArtist } from './entity/fav-artist.entity';
+import { FavAlbum } from './entity/fav-album.entity';
+import { FavTrack } from './entity/fav-track.entity';
 
 export const FavRepositoryInterface = 'FavRepositoryInterface';
 
 export interface FavRepository {
-  getFavorites(): Favorites;
-  addTrackToFav(id: string): boolean;
-  addAlbumToFav(id: string): boolean;
-  addArtistToFav(id: string): boolean;
-  deleteTrackFromFav(id: string): boolean;
-  deleteAlbumFromFav(id: string): boolean;
-  deleteArtistFromFav(id: string): boolean;
+  getFavorites(): Promise<Fav[]>;
+
+  addTrackToFav(track: FavTrack): Promise<FavTrack>;
+
+  addAlbumToFav(album: FavAlbum): Promise<FavAlbum>;
+
+  addArtistToFav(artist: FavArtist): Promise<FavArtist>;
+
+  deleteTrackFromFav(track: Track): boolean;
+
+  deleteAlbumFromFav(album: Album): boolean;
+
+  deleteArtistFromFav(artist: Artist): boolean;
 }
