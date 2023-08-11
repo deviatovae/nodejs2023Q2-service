@@ -35,19 +35,37 @@ export class FavDbRepository implements FavRepository {
     return this.favTrackRepo.save(track);
   }
 
-  deleteAlbumFromFav(album: Album): boolean {
-    return false;
+  async deleteAlbumFromFav(album: FavAlbum): Promise<boolean> {
+    const deleteResult = await this.favAlbumRepo.delete({ id: album.id });
+
+    return !!deleteResult.affected;
   }
 
-  deleteArtistFromFav(artist: Artist): boolean {
-    return false;
+  async deleteArtistFromFav(artist: FavArtist): Promise<boolean> {
+    const deleteResult = await this.favArtistRepo.delete({ id: artist.id });
+
+    return !!deleteResult.affected;
   }
 
-  deleteTrackFromFav(track: Track): boolean {
-    return false;
+  async deleteTrackFromFav(track: FavTrack): Promise<boolean> {
+    const deleteResult = await this.favTrackRepo.delete({ id: track.id });
+
+    return !!deleteResult.affected;
   }
 
   getFavorites() {
     return this.fav.find();
+  }
+
+  getFavByAlbum(album: Album): Promise<FavAlbum | null> {
+    return this.favAlbumRepo.findOneBy({ album });
+  }
+
+  getFavByArtist(artist: Artist): Promise<FavArtist | null> {
+    return this.favArtistRepo.findOneBy({ artist });
+  }
+
+  getFavByTrack(track: Track): Promise<FavTrack | null> {
+    return this.favTrackRepo.findOneBy({ track });
   }
 }

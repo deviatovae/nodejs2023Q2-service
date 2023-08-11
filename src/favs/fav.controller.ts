@@ -60,33 +60,33 @@ export class FavController {
 
   @Delete('track/:id')
   @HttpCode(204)
-  deleteTrackToFav(@Param('id') id: string): void {
+  async deleteTrackToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.deleteTrackToFavorites(id)) {
+    if (!(await this.favService.deleteTrackFromFavorites(id))) {
       throw new NotFoundException();
     }
   }
 
   @Delete('album/:id')
   @HttpCode(204)
-  deleteAlbumToFav(@Param('id') id: string): void {
+  async deleteAlbumToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.deleteAlbumToFavorites(id)) {
+    if (!(await this.favService.deleteAlbumFromFavorites(id))) {
       throw new NotFoundException();
     }
   }
 
   @Delete('artist/:id')
   @HttpCode(204)
-  deleteArtistToFav(@Param('id') id: string): void {
+  async deleteArtistToFav(@Param('id') id: string): Promise<void> {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid id format');
     }
-    if (!this.favService.deleteArtistToFavorites(id)) {
+    if (!(await this.favService.deleteArtistFromFavorites(id))) {
       throw new NotFoundException();
     }
   }
