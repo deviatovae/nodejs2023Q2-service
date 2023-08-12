@@ -5,7 +5,6 @@ services:
     build:
       context: ..
       dockerfile: docker/node/Dockerfile
-    command: npm run start:dev
     env_file:
       - ../.env
     volumes:

@@ -6,22 +6,18 @@ import { ArtistModule } from './artists/artist.module';
 import { AlbumModule } from './albums/album.module';
 import { FavModule } from './favs/fav.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import typeorm from './config/typeorm';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeorm],
+    }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        type: 'postgres',
-        synchronize: true,
-        url: configService.get('DATABASE_DSN'),
-        autoLoadEntities: true,
-        database: 'postgres',
-        schema: 'public',
-        logging: configService.get('DATABASE_LOGGING') === '1',
-      }),
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
     }),
     UsersModule,
     TrackModule,
