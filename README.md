@@ -18,10 +18,25 @@ git clone https://github.com/deviatovae/nodejs2023Q2-service.git
 git checkout develop
 ```
 
+## Create `.env` file
+
+Copy `.env.example` to `.env` file
+
+
+## Load `env` variables for docker compose: 
+- option 1: run in the terminal: 
+
+  - `set -a`
+  - `source .env`
+  
+- option 2.
+  - use docker compose with passing path to .env manually: e.g 
+  `docker compose -f docker/docker-compose.yaml --env-file=.env up -d`
+
 ## Starting docker containers
 
 ```
-docker compose -f docker/docker-compose.yaml up
+docker compose -f docker/docker-compose.yaml up -d
 ```
 
 ## Testing
@@ -30,6 +45,10 @@ Enter into the `node` container
 
 ```
 docker compose -f docker/docker-compose.yaml exec node sh
+```
+- if you pass env manually, run:
+```
+docker compose -f docker/docker-compose.yaml --env-file=.env exec node sh
 ```
 
 Run tests
