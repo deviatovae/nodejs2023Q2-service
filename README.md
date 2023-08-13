@@ -72,3 +72,9 @@ npm run lint
 ```
 npm run format
 ```
+
+### Check for vulnerabilities
+
+```
+npm run audit
+```
