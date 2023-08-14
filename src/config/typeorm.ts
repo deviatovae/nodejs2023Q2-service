@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import * as path from 'path';
 
 dotenvConfig({ path: '.env' });
 
@@ -12,7 +13,7 @@ const config = {
   database: 'postgres',
   schema: 'public',
   logging: `${process.env.DATABASE_LOGGING} === 1`,
-  migrations: ['migrations/*{.ts,.js}'],
+  migrations: [path.join(__dirname, '..', 'migrations', '*{.ts,.js}')],
 };
 
 export default registerAs('typeorm', () => config);

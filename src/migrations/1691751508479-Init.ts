@@ -5,14 +5,14 @@ export class Init1691751508479 implements MigrationInterface {
     await queryRunner.query(
       `create table public."user"
        (
-           id         uuid      default uuid_generate_v4() not null
+           id         uuid                    not null
                constraint "PK_cace4a159ff9f2512dd42373760"
                    primary key,
-           login      varchar                              not null,
-           password   varchar                              not null,
-           version    integer                              not null,
-           created_at timestamp default now()              not null,
-           updated_at timestamp default now()              not null
+           login      varchar                 not null,
+           password   varchar                 not null,
+           version    integer                 not null,
+           created_at timestamp default now() not null,
+           updated_at timestamp default now() not null
        );
 
       alter table public."user"
@@ -24,11 +24,11 @@ export class Init1691751508479 implements MigrationInterface {
     await queryRunner.query(
       `create table public.artist
        (
-           id     uuid default uuid_generate_v4() not null
+           id     uuid    not null
                constraint "PK_55b76e71568b5db4d01d3e394ed"
                    primary key,
-           name   varchar                         not null,
-           grammy boolean                         not null
+           name   varchar not null,
+           grammy boolean not null
        );
 
       alter table public.artist
@@ -40,11 +40,11 @@ export class Init1691751508479 implements MigrationInterface {
     await queryRunner.query(
       ` create table if not exists public.album
         (
-            id         uuid default uuid_generate_v4() not null
+            id         uuid    not null
                 constraint "PK_58e0b4b8a31bb897e6959fe3206"
                     primary key,
-            name       varchar                         not null,
-            year       integer                         not null,
+            name       varchar not null,
+            year       integer not null,
             "artistId" uuid
                 constraint "FK_3d06f25148a4a880b429e3bc839"
                     references public.artist
@@ -59,15 +59,15 @@ export class Init1691751508479 implements MigrationInterface {
     await queryRunner.query(
       ` create table public.track
         (
-            id         uuid default uuid_generate_v4() not null
+            id         uuid    not null
                 constraint "PK_0631b9bcf521f8fab3a15f2c37e"
                     primary key,
-            name       varchar                         not null,
+            name       varchar not null,
             "albumId"  uuid
                 constraint "FK_b105d945c4c185395daca91606a"
                     references public.album
                     on delete set null,
-            duration   integer                         not null,
+            duration   integer not null,
             "artistId" uuid
                 constraint "FK_997cfd9e91fd00a363500f72dc2"
                     references public.artist
@@ -82,10 +82,10 @@ export class Init1691751508479 implements MigrationInterface {
     await queryRunner.query(
       ` create table public.favorites
         (
-            id        uuid default uuid_generate_v4() not null
+            id        uuid    not null
                 constraint "PK_890818d27523748dd36a4d1bdc8"
                     primary key,
-            type      varchar                         not null,
+            type      varchar not null,
             artist_id uuid
                 constraint "UQ_9c7c756540b38ffe4e419c8bc99"
                     unique
