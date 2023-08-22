@@ -4,6 +4,9 @@ import { FavoritesResult } from './dto/fav-result.dto';
 import { ArtistService } from '../artists/artist.service';
 import { TrackService } from '../tracks/track.service';
 import { AlbumService } from '../albums/album.service';
+import { FavArtist } from './entity/fav-artist.entity';
+import { FavAlbum } from './entity/fav-album.entity';
+import { FavTrack } from './entity/fav-track.entity';
 
 @Injectable()
 export class FavService {
@@ -14,79 +17,86 @@ export class FavService {
     private readonly albumService: AlbumService,
   ) {}
 
-  getFavorites(): FavoritesResult {
-    const favs = this.repository.getFavorites();
+  async getFavorites(): Promise<FavoritesResult> {
+    const favs = await this.repository.getFavorites();
 
     return {
-      albums: favs.albums
-        .map((id) => this.albumService.getAlbumById(id))
-        .filter((val) => !!val),
-      tracks: favs.tracks
-        .map((id) => this.trackService.getTrackById(id))
-        .filter((val) => !!val),
-      artists: favs.artists
-        .map((id) => this.artistService.getArtistById(id))
-        .filter((val) => !!val),
+      albums: favs
+        .filter((fav) => fav instanceof FavAlbum)
+        .map((fav: FavAlbum) => fav.album),
+      tracks: favs
+        .filter((fav) => fav instanceof FavTrack)
+        .map((fav: FavTrack) => fav.track),
+      artists: favs
+        .filter((fav) => fav instanceof FavArtist)
+        .map((fav: FavArtist) => fav.artist),
     };
   }
 
-  addTrackToFavorites(id: string): boolean {
-    const track = this.trackService.getTrackById(id);
+  async addTrackToFavorites(id: string): Promise<boolean> {
+    const track = await this.trackService.getTrackById(id);
 
     if (!track) {
       return false;
     }
 
-    this.repository.addTrackToFav(id);
-
-    return true;
+    return !!(await this.repository.addTrackToFav(new FavTrack(track)));
   }
 
-  addAlbumToFavorites(id: string): boolean {
-    const album = this.albumService.getAlbumById(id);
+  async addAlbumToFavorites(id: string): Promise<boolean> {
+    const album = await this.albumService.getAlbumById(id);
 
     if (!album) {
       return false;
     }
 
-    this.repository.addAlbumToFav(id);
-
-    return true;
+    return !!(await this.repository.addAlbumToFav(new FavAlbum(album)));
   }
 
-  addArtistToFavorites(id: string): boolean {
-    const artist = this.artistService.getArtistById(id);
+  async addArtistToFavorites(id: string): Promise<boolean> {
+    const artist = await this.artistService.getArtistById(id);
 
     if (!artist) {
       return false;
     }
 
-    this.repository.addArtistToFav(id);
-
-    return true;
+    return !!(await this.repository.addArtistToFav(new FavArtist(artist)));
   }
 
-  deleteTrackToFavorites(id: string): boolean {
-    const track = this.trackService.getTrackById(id);
+  async deleteTrackFromFavorites(id: string): Promise<boolean> {
+    const track = await this.trackService.getTrackById(id);
     if (!track) {
       return false;
     }
-    return this.repository.deleteTrackFromFav(id);
-  }
-
-  deleteAlbumToFavorites(id: string): boolean {
-    const track = this.albumService.getAlbumById(id);
-    if (!track) {
+    const fav = await this.repository.getFavByTrack(track);
+    if (!fav) {
       return false;
     }
-    return this.repository.deleteAlbumFromFav(id);
+
+    return await this.repository.deleteTrackFromFav(fav);
   }
 
-  deleteArtistToFavorites(id: string): boolean {
-    const track = this.artistService.getArtistById(id);
-    if (!track) {
+  async deleteAlbumFromFavorites(id: string): Promise<boolean> {
+    const album = await this.albumService.getAlbumById(id);
+    if (!album) {
       return false;
     }
-    return this.repository.deleteArtistFromFav(id);
+    const fav = await this.repository.getFavByAlbum(album);
+    if (!fav) {
+      return false;
+    }
+    return await this.repository.deleteAlbumFromFav(fav);
+  }
+
+  async deleteArtistFromFavorites(id: string): Promise<boolean> {
+    const artist = await this.artistService.getArtistById(id);
+    if (!artist) {
+      return false;
+    }
+    const fav = await this.repository.getFavByArtist(artist);
+    if (!fav) {
+      return false;
+    }
+    return await this.repository.deleteArtistFromFav(fav);
   }
 }

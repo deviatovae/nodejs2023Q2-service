@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -10,37 +11,31 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { isUUID } from 'class-validator';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserSerializer } from './user.serializer';
 
 @Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
-  constructor(
-    private readonly userService: UsersService,
-    private readonly userSerializer: UserSerializer,
-  ) {}
+  constructor(private readonly userService: UsersService) {}
 
   @Get()
   getAllUsers() {
-    return this.userService
-      .getAllUsers()
-      .map((user) => this.userSerializer.serialize(user));
+    return this.userService.getAllUsers();
   }
 
   @Post()
   @HttpCode(201)
-  createUser(@Body() dto: CreateUserDto): Omit<User, 'password'> {
+  createUser(@Body() dto: CreateUserDto) {
     if (!dto.login || !dto.password) {
       throw new BadRequestException('Invalid dto format');
     }
-    const user = this.userService.createUser(dto);
 
-    return this.userSerializer.serialize(user);
+    return this.userService.createUser(dto);
   }
 
   @Get(':id')
@@ -53,7 +48,7 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
-    return this.userSerializer.serialize(user);
+    return user;
   }
 
   @Put(':id')
@@ -71,13 +66,13 @@ export class UsersController {
     if (!user) {
       throw new NotFoundException();
     }
-    const userResult = this.userService.updateUser(user, dto);
 
+    const userResult = await this.userService.updateUser(user, dto);
     if (!userResult) {
       throw new BadRequestException();
     }
 
-    return this.userSerializer.serialize(user);
+    return userResult;
   }
 
   @Delete(':id')
@@ -92,7 +87,7 @@ export class UsersController {
       throw new NotFoundException();
     }
 
-    if (!this.userService.deleteUser(user)) {
+    if (!(await this.userService.deleteUser(user))) {
       throw new InternalServerErrorException();
     }
   }

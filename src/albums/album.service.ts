@@ -1,48 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { Album } from './album.model';
+import { Album } from './album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Artist } from '../artists/artist.entity';
 
 @Injectable()
 export class AlbumService {
-  private albums: Album[] = [];
+  constructor(
+    @InjectRepository(Album) private repository: Repository<Album>,
+    @InjectRepository(Artist) private artistRepository: Repository<Artist>,
+  ) {}
 
-  getAllAlbums(): Album[] {
-    return this.albums;
+  getAllAlbums(): Promise<Album[]> {
+    return this.repository.find();
   }
 
-  getAlbumById(id: string): Album {
-    return this.albums.find((album) => album.id === id);
+  getAlbumById(id: string): Promise<Album | null> {
+    return this.repository.findOneBy({ id });
   }
 
-  createAlbum(dto: CreateAlbumDto): Album {
-    const album = {
-      id: uuidv4(),
-      ...dto,
-    };
+  async createAlbum(dto: CreateAlbumDto): Promise<Album> {
+    const album = new Album(dto);
 
-    this.albums.push(album);
-    return album;
-  }
-
-  updateAlbum(album: Album, { name, year, artistId }: UpdateAlbumDto): Album {
-    album.name = name;
-    album.year = year;
-    album.artistId = artistId;
-
-    return album;
-  }
-
-  deleteAlbum(album: Album): boolean {
-    const albumIdx = this.albums.findIndex((t) => album === t);
-
-    if (albumIdx < 0) {
-      return false;
+    if (dto.artistId) {
+      album.artist = await this.artistRepository.findOneBy({
+        id: dto.artistId,
+      });
     }
 
-    this.albums.splice(albumIdx, 1);
+    return this.repository.save(album);
+  }
 
-    return true;
+  async updateAlbum(
+    album: Album,
+    { name, year, artistId }: UpdateAlbumDto,
+  ): Promise<Album> {
+    album.name = name;
+    album.year = year;
+
+    if (artistId) {
+      album.artist = await this.artistRepository.findOneBy({ id: artistId });
+    }
+
+    return this.repository.save(album);
+  }
+
+  async deleteAlbum({ id: albumId }: Album): Promise<boolean> {
+    const deleteResult = await this.repository.delete({ id: albumId });
+
+    return !!deleteResult.affected;
   }
 }
